@@ -1,3 +1,7 @@
+#include "ckit.h"
+#include "main.h"
+
+#include <stdio.h>
 #include <windows.h>
 #include <gl/gl.h>
 
@@ -75,6 +79,17 @@ int WINAPI WinMain(HINSTANCE hInstance,
     
     // enable OpenGL for the window
     EnableOpenGL(hWnd, &hDC, &hRC);
+
+    // Create obj array
+    AllocConsole();
+    freopen( "CONOUT$", "wb", stdout);
+    array_obj a;
+    array_obj_construct(&a);
+    obj o;
+    o.radius = 9.9;
+    o.location[0] = 3.3;
+    array_obj_pushback(&a, o);
+    array_obj_print(a.data, a.size);
     
     // program main loop
     while (!quit)
