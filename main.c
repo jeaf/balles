@@ -40,6 +40,77 @@ BOOL CenterWindow(HWND hwndWindow)
      return TRUE;
 }
 
+int draw(HDC iHDC)
+{
+    //  Enable Z-buffer depth test
+    glEnable(GL_DEPTH_TEST);
+
+    // Rotate when user changes rotate_x and rotate_y
+    glRotatef(0.5, 1.0, 0.0, 0.0);
+    glRotatef(0.5, 0.0, 1.0, 0.0);
+
+    // OpenGL animation code goes here
+    glClearColor( 0.3f, 0.3f, 0.3f, 0.0f );
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //Multi-colored side - FRONT
+    glBegin(GL_POLYGON);
+    glColor3f( 1.0, 0.0, 0.0 );     glVertex3f(  0.5, -0.5, -0.5 );      // P1 is red
+    glColor3f( 0.0, 1.0, 0.0 );     glVertex3f(  0.5,  0.5, -0.5 );      // P2 is green
+    glColor3f( 0.0, 0.0, 1.0 );     glVertex3f( -0.5,  0.5, -0.5 );      // P3 is blue
+    glColor3f( 1.0, 0.0, 1.0 );     glVertex3f( -0.5, -0.5, -0.5 );      // P4 is purple
+    glEnd();
+
+    // White side - BACK
+    glBegin(GL_POLYGON);
+    glColor3f(   1.0,  1.0, 1.0 );
+    glVertex3f(  0.5, -0.5, 0.5 );
+    glVertex3f(  0.5,  0.5, 0.5 );
+    glVertex3f( -0.5,  0.5, 0.5 );
+    glVertex3f( -0.5, -0.5, 0.5 );
+    glEnd();
+     
+    // Purple side - RIGHT
+    glBegin(GL_POLYGON);
+    glColor3f(  1.0,  0.0,  1.0 );
+    glVertex3f( 0.5, -0.5, -0.5 );
+    glVertex3f( 0.5,  0.5, -0.5 );
+    glVertex3f( 0.5,  0.5,  0.5 );
+    glVertex3f( 0.5, -0.5,  0.5 );
+    glEnd();
+     
+    // Green side - LEFT
+    glBegin(GL_POLYGON);
+    glColor3f(   0.0,  1.0,  0.0 );
+    glVertex3f( -0.5, -0.5,  0.5 );
+    glVertex3f( -0.5,  0.5,  0.5 );
+    glVertex3f( -0.5,  0.5, -0.5 );
+    glVertex3f( -0.5, -0.5, -0.5 );
+    glEnd();
+     
+    // Blue side - TOP
+    glBegin(GL_POLYGON);
+    glColor3f(   0.0,  0.0,  1.0 );
+    glVertex3f(  0.5,  0.5,  0.5 );
+    glVertex3f(  0.5,  0.5, -0.5 );
+    glVertex3f( -0.5,  0.5, -0.5 );
+    glVertex3f( -0.5,  0.5,  0.5 );
+    glEnd();
+     
+    // Red side - BOTTOM
+    glBegin(GL_POLYGON);
+    glColor3f(   1.0,  0.0,  0.0 );
+    glVertex3f(  0.5, -0.5, -0.5 );
+    glVertex3f(  0.5, -0.5,  0.5 );
+    glVertex3f( -0.5, -0.5,  0.5 );
+    glVertex3f( -0.5, -0.5, -0.5 );
+    glEnd();
+
+    glFlush();
+
+    SwapBuffers(iHDC);
+}
+
 int WINAPI WinMain(HINSTANCE hInstance,
                    HINSTANCE hPrevInstance,
                    LPSTR lpCmdLine,
@@ -51,7 +122,6 @@ int WINAPI WinMain(HINSTANCE hInstance,
     HGLRC hRC;
     MSG msg;
     BOOL quit = FALSE;
-    float theta = 0.0f;
 	
     // register window class
     wc.style = CS_OWNDC;
@@ -110,76 +180,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
         } 
         else 
         {
-            //  Enable Z-buffer depth test
-            glEnable(GL_DEPTH_TEST);
-
-            // Rotate when user changes rotate_x and rotate_y
-            glRotatef(0.5, 1.0, 0.0, 0.0);
-            glRotatef(0.5, 0.0, 1.0, 0.0);
- 
-            // OpenGL animation code goes here
-            glClearColor( 0.3f, 0.3f, 0.3f, 0.0f );
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-            //Multi-colored side - FRONT
-            glBegin(GL_POLYGON);
-            glColor3f( 1.0, 0.0, 0.0 );     glVertex3f(  0.5, -0.5, -0.5 );      // P1 is red
-            glColor3f( 0.0, 1.0, 0.0 );     glVertex3f(  0.5,  0.5, -0.5 );      // P2 is green
-            glColor3f( 0.0, 0.0, 1.0 );     glVertex3f( -0.5,  0.5, -0.5 );      // P3 is blue
-            glColor3f( 1.0, 0.0, 1.0 );     glVertex3f( -0.5, -0.5, -0.5 );      // P4 is purple
-            glEnd();
-
-            // White side - BACK
-            glBegin(GL_POLYGON);
-            glColor3f(   1.0,  1.0, 1.0 );
-            glVertex3f(  0.5, -0.5, 0.5 );
-            glVertex3f(  0.5,  0.5, 0.5 );
-            glVertex3f( -0.5,  0.5, 0.5 );
-            glVertex3f( -0.5, -0.5, 0.5 );
-            glEnd();
-             
-            // Purple side - RIGHT
-            glBegin(GL_POLYGON);
-            glColor3f(  1.0,  0.0,  1.0 );
-            glVertex3f( 0.5, -0.5, -0.5 );
-            glVertex3f( 0.5,  0.5, -0.5 );
-            glVertex3f( 0.5,  0.5,  0.5 );
-            glVertex3f( 0.5, -0.5,  0.5 );
-            glEnd();
-             
-            // Green side - LEFT
-            glBegin(GL_POLYGON);
-            glColor3f(   0.0,  1.0,  0.0 );
-            glVertex3f( -0.5, -0.5,  0.5 );
-            glVertex3f( -0.5,  0.5,  0.5 );
-            glVertex3f( -0.5,  0.5, -0.5 );
-            glVertex3f( -0.5, -0.5, -0.5 );
-            glEnd();
-             
-            // Blue side - TOP
-            glBegin(GL_POLYGON);
-            glColor3f(   0.0,  0.0,  1.0 );
-            glVertex3f(  0.5,  0.5,  0.5 );
-            glVertex3f(  0.5,  0.5, -0.5 );
-            glVertex3f( -0.5,  0.5, -0.5 );
-            glVertex3f( -0.5,  0.5,  0.5 );
-            glEnd();
-             
-            // Red side - BOTTOM
-            glBegin(GL_POLYGON);
-            glColor3f(   1.0,  0.0,  0.0 );
-            glVertex3f(  0.5, -0.5, -0.5 );
-            glVertex3f(  0.5, -0.5,  0.5 );
-            glVertex3f( -0.5, -0.5,  0.5 );
-            glVertex3f( -0.5, -0.5, -0.5 );
-            glEnd();
-
-            glFlush();
-
-            SwapBuffers( hDC );
-                
-            theta += 1.0f;
-
+            draw(hDC);
             Sleep(10);
         }
     }
