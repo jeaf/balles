@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <gl/gl.h>
+#include <gl/glu.h>
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 void EnableOpenGL(HWND hWnd, HDC * hDC, HGLRC * hRC);
@@ -40,7 +41,73 @@ BOOL CenterWindow(HWND hwndWindow)
      return TRUE;
 }
 
+int init()
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glFrustum(-10.0, 10.0, -10.0, 10.0, 0.1, 2000.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+int update(array_obj* objs)
+{
+    return 0;
+}
+
 int draw(HDC iHDC)
+{
+    //  Enable Z-buffer depth test
+    glEnable(GL_DEPTH_TEST);
+
+    glPushMatrix();
+
+    // Rotate when user changes rotate_x and rotate_y
+    //glRotatef(0.5, 1.0, 0.0, 0.0);
+    //glRotatef(0.5, 0.0, 1.0, 0.0);
+    //glTranslated(0.5, 0.0, 0.0);
+    //gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, -1.0, 0.0, 1.0, 0.0);
+    gluLookAt(3.0, 3.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+    glClearColor( 0.3f, 0.3f, 0.3f, 0.0f );
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glBegin(GL_POLYGON);
+    //glColor3f(1.0, 0.0, 0.0);
+    //glVertex3f(1.0, -0.5, 1.0);
+    //glVertex3f(-1.0, -0.5, 1.0);
+    //glVertex3f(-1.0, -0.5, -1.0);
+    //glVertex3f(1.0, -0.5, -1.0);
+    //glEnd();
+
+    glBegin(GL_LINES);
+    glColor3f(1.0, 0.0, 0.0);
+    glVertex3f(0.0, 0.0, 0.0);
+    glVertex3f(10.0, 0.0, 0.0);
+    glColor3f(0.0, 1.0, 0.0);
+    glVertex3f(0.0, 0.0, 0.0);
+    glVertex3f(0.0, 10.0, 0.0);
+    glColor3f(0.0, 0.0, 1.0);
+    glVertex3f(0.0, 0.0, 0.0);
+    glVertex3f(0.0, 0.0, 10.0);
+    glEnd();
+
+    GLUquadric* quad = gluNewQuadric();
+    glPushMatrix();
+    glTranslatef(4.0, 0, 0);
+    glColor3f(1.0, 0.4, 0.5);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    gluSphere(quad, 5, 10, 10);
+    gluDeleteQuadric(quad);
+    glPopMatrix();
+
+    glPopMatrix();
+
+    glFlush();
+
+    SwapBuffers(iHDC);
+}
+
+int draw_old(HDC iHDC)
 {
     //  Enable Z-buffer depth test
     glEnable(GL_DEPTH_TEST);
@@ -150,16 +217,21 @@ int WINAPI WinMain(HINSTANCE hInstance,
     // enable OpenGL for the window
     EnableOpenGL(hWnd, &hDC, &hRC);
 
-    // Create obj array
+    // Allocate a console for debugging purposes
     AllocConsole();
-    freopen( "CONOUT$", "wb", stdout);
+    freopen("CONOUT$", "wb", stdout);
+
+    // Create the obj array that will contain all balls
     array_obj a;
-    array_obj_construct(&a);
+    array_obj_ctor(&a);
     obj o;
     o.radius = 9.9;
     o.location[0] = 3.3;
-    array_obj_pushback(&a, o);
-    array_obj_print(a.data, a.size);
+    *array_obj_pushback(&a) = o;
+    array_obj_print(&a);
+
+    // init
+    init();
     
     // program main loop
     while (!quit)
@@ -180,8 +252,9 @@ int WINAPI WinMain(HINSTANCE hInstance,
         } 
         else 
         {
+            update(&a);
             draw(hDC);
-            Sleep(10);
+            Sleep(100);
         }
     }
     
