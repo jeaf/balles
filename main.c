@@ -45,7 +45,8 @@ int init()
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(-10.0, 10.0, -10.0, 10.0, 0.1, 2000.0);
+    //glFrustum(-10.0, 10.0, -10.0, 10.0, 0.1, 2000.0);
+    gluPerspective(110.0, 1.0, 0.5, 2000.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -67,7 +68,7 @@ int draw(HDC iHDC)
     //glRotatef(0.5, 0.0, 1.0, 0.0);
     //glTranslated(0.5, 0.0, 0.0);
     //gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, -1.0, 0.0, 1.0, 0.0);
-    gluLookAt(3.0, 3.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(5.0, 5.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
     glClearColor( 0.3f, 0.3f, 0.3f, 0.0f );
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -92,11 +93,15 @@ int draw(HDC iHDC)
     glEnd();
 
     GLUquadric* quad = gluNewQuadric();
+    gluQuadricDrawStyle(quad, GLU_FILL);
+    gluQuadricNormals(quad, GLU_SMOOTH);
+    gluQuadricOrientation(quad, GLU_OUTSIDE);
+    gluQuadricTexture(quad, GL_TRUE);
     glPushMatrix();
     glTranslatef(4.0, 0, 0);
     glColor3f(1.0, 0.4, 0.5);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    gluSphere(quad, 5, 10, 10);
+    gluSphere(quad, 3.0, 25, 25);
     gluDeleteQuadric(quad);
     glPopMatrix();
 
