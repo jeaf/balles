@@ -59,6 +59,11 @@ int update(array_obj* objs)
         objs->data[i].location[1] += 0.01 * objs->data[i].velocity[1];
         objs->data[i].location[2] += 0.01 * objs->data[i].velocity[2];
         objs->data[i].velocity[1] += 0.01 * -9.8;
+
+        if (objs->data[i].location[1] < 0)
+        {
+            objs->data[i].velocity[1] = -0.90 * objs->data[i].velocity[1];
+        }
     }
 
     return 0;
@@ -252,7 +257,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     o.velocity[0] = 0.0;
     o.velocity[1] = 0.0;
     o.velocity[2] = 0.0;
-    *array_obj_pushback(&a) = o;
+    //*array_obj_pushback(&a) = o;
     o.radius = 1.0;
     o.location[0] = 0.0;
     o.location[1] = 6.0;
