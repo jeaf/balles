@@ -1,5 +1,4 @@
 #include "ckit.h"
-#include "main.h"
 
 #include <stdio.h>
 #include <windows.h>

@@ -6,7 +6,7 @@ TCCOPTS = -Wall
 balles.exe: main.o ckit.o
 	$(TCC) $(TCCOPTS) -lOpenGL32 -lglu32 -o $@ $+
 
-main.o: main.c main.h ckit.h
+main.o: main.c ckit.h
 	$(TCC) $(TCCOPTS) -I. -c $<
 
 ckit.o: ckit.c ckit.h
