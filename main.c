@@ -244,7 +244,14 @@ int WINAPI WinMain(HINSTANCE hInstance,
     o.velocity[1] = 0.0;
     o.velocity[2] = 0.0;
     *array_obj_pushback(&a) = o;
-    array_obj_print(&a);
+    o.radius = 1.0;
+    o.location[0] = 0.0;
+    o.location[1] = 6.0;
+    o.location[2] = 0.0;
+    o.velocity[0] = 0.0;
+    o.velocity[1] = 0.0;
+    o.velocity[2] = 0.0;
+    *array_obj_pushback(&a) = o;
 
     // init
     init();
