@@ -1,5 +1,6 @@
 #include "ckit.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <windows.h>
 #include <gl/gl.h>
@@ -44,7 +45,6 @@ int init()
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //glFrustum(-10.0, 10.0, -10.0, 10.0, 0.1, 2000.0);
     gluPerspective(110.0, 1.0, 0.5, 2000.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -55,8 +55,10 @@ int update(array_obj* objs)
     return 0;
 }
 
-int draw(HDC iHDC)
+int draw(HDC iHDC, array_obj* objs)
 {
+    assert(objs);
+
     //  Enable Z-buffer depth test
     glEnable(GL_DEPTH_TEST);
 
@@ -91,18 +93,23 @@ int draw(HDC iHDC)
     glVertex3f(0.0, 0.0, 10.0);
     glEnd();
 
-    GLUquadric* quad = gluNewQuadric();
-    gluQuadricDrawStyle(quad, GLU_FILL);
-    gluQuadricNormals(quad, GLU_SMOOTH);
-    gluQuadricOrientation(quad, GLU_OUTSIDE);
-    gluQuadricTexture(quad, GL_TRUE);
-    glPushMatrix();
-    glTranslatef(4.0, 0, 0);
-    glColor3f(1.0, 0.4, 0.5);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    gluSphere(quad, 3.0, 25, 25);
-    gluDeleteQuadric(quad);
-    glPopMatrix();
+    for (int i = 0; i < objs->size; ++i)
+    {
+        GLUquadric* quad = gluNewQuadric();
+        gluQuadricDrawStyle(quad, GLU_FILL);
+        gluQuadricNormals(quad, GLU_SMOOTH);
+        gluQuadricOrientation(quad, GLU_OUTSIDE);
+        gluQuadricTexture(quad, GL_TRUE);
+        glPushMatrix();
+        glTranslatef(objs->data[i].location[0],
+                     objs->data[i].location[1],
+                     objs->data[i].location[2]);
+        glColor3f(1.0, 0.4, 0.5);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        gluSphere(quad, objs->data[i].radius, 25, 25);
+        gluDeleteQuadric(quad);
+        glPopMatrix();
+    }
 
     glPopMatrix();
 
@@ -222,15 +229,20 @@ int WINAPI WinMain(HINSTANCE hInstance,
     EnableOpenGL(hWnd, &hDC, &hRC);
 
     // Allocate a console for debugging purposes
-    AllocConsole();
-    freopen("CONOUT$", "wb", stdout);
+    //AllocConsole();
+    //freopen("CONOUT$", "wb", stdout);
 
     // Create the obj array that will contain all balls
     array_obj a;
     array_obj_ctor(&a);
     obj o;
-    o.radius = 9.9;
-    o.location[0] = 3.3;
+    o.radius = 3.0;
+    o.location[0] = 4.0;
+    o.location[1] = 0.0;
+    o.location[2] = 0.0;
+    o.velocity[0] = 0.0;
+    o.velocity[1] = 0.0;
+    o.velocity[2] = 0.0;
     *array_obj_pushback(&a) = o;
     array_obj_print(&a);
 
@@ -257,7 +269,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
         else 
         {
             update(&a);
-            draw(hDC);
+            draw(hDC, &a);
             Sleep(100);
         }
     }
