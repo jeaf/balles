@@ -58,6 +58,7 @@ int update(array_obj* objs)
         objs->data[i].location[0] += 0.1 * objs->data[i].velocity[0];
         objs->data[i].location[1] += 0.1 * objs->data[i].velocity[1];
         objs->data[i].location[2] += 0.1 * objs->data[i].velocity[2];
+        objs->data[i].velocity[1] += 0.1 * 9.8;
     }
 
     return 0;
