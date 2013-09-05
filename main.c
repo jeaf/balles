@@ -52,6 +52,14 @@ int init()
 
 int update(array_obj* objs)
 {
+    assert(objs);
+    for (int i = 0; i < objs->size; ++i)
+    {
+        objs->data[i].location[0] += 0.1 * objs->data[i].velocity[0];
+        objs->data[i].location[1] += 0.1 * objs->data[i].velocity[1];
+        objs->data[i].location[2] += 0.1 * objs->data[i].velocity[2];
+    }
+
     return 0;
 }
 
@@ -249,7 +257,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     o.location[1] = 6.0;
     o.location[2] = 0.0;
     o.velocity[0] = 0.0;
-    o.velocity[1] = 0.0;
+    o.velocity[1] = -0.2;
     o.velocity[2] = 0.0;
     *array_obj_pushback(&a) = o;
 
