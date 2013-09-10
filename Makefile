@@ -3,8 +3,11 @@ PYTHON  = C:\Python27\python.exe
 TCC     = $(USERPROFILE)\app\tcc\tcc.exe
 TCCOPTS = -Wall
 
-balles.exe: main.o ckit.o
+balles.exe: gameloop.o main.o ckit.o
 	$(TCC) $(TCCOPTS) -lOpenGL32 -lglu32 -o $@ $+
+
+gameloop.o: gameloop.c gameloop.h
+	$(TCC) $(TCCOPTS) -I. -c $<
 
 main.o: main.c ckit.h
 	$(TCC) $(TCCOPTS) -I. -c $<
